@@ -14,6 +14,7 @@ from keras.layers import Activation, Dropout, Flatten, Dense
 from keras import backend as K
 from keras.optimizers import Adam
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 
@@ -31,7 +32,7 @@ train_data_dir = 'data/train'
 validation_data_dir = 'data/validation'
 nb_train_samples = 128
 nb_validation_samples = 32
-epochs = 5
+epochs = 50
 batch_size = 16
 
 
@@ -106,46 +107,41 @@ model.fit_generator(
     validation_data=validation_generator,
     validation_steps=nb_validation_samples // batch_size)
 
+###############################################################################
+# Saving model paramterers to a file
+###############################################################################
+
 model.save_weights('data_augmentation_weight.h5')
 
 ###############################################################################
-# making prediction
+# Reading model parameters from a file
 ###############################################################################
-dir_name = '/home/ravi/Documents/leakage_detector/data/train/leak/'
-for i in range(1,64):
-    image_name = 'leak%03d.jpg' %(i)
-    full_name = dir_name + image_name
-    print full_name
+model.load_weights('data_augmentation_weight.h5')
+
+###############################################################################
+# making prediction by choosing a random image from the validation file
+###############################################################################
+def check_prediction_on_validation_data():
+    dir_name = '/home/ravi/Documents/leakage_detector/data/validation/'
+    class_names = os.listdir(dir_name)
+    chosen_dir = np.random.choice(class_names)
+    chosen_i = np.random.choice(range(1,17))
+    image_name = chosen_dir + '%03d.jpg' %(chosen_i)
+    full_name = dir_name + chosen_dir + '/' + image_name
     img = load_img(full_name)
+    plt.imshow(img)
     x = img_to_array(img)
     x = x/255
     x = x.reshape((1,) + x.shape)
-    print model.predict_classes(x)
+    pred = model.predict_classes(x)[0][0]
     
-dir_name = '/home/ravi/Documents/leakage_detector/data/train/no_leak/'
-for i in range(1,64):
-    image_name = 'no_leak%03d.jpg' %(i)
-    full_name = dir_name + image_name
-    print full_name
-    img = load_img(full_name)
-    x = img_to_array(img)
-    x = x/255
-    plt.figure()
-    plt.imshow(x)
-    x = x.reshape((1,) + x.shape)
-    print model.predict(x)
+    for key, value in validation_generator.class_indices.items():
+        if pred == value:
+            print 'Predicted: ', key, 'Actual: ', chosen_dir
+            break
+        if pred == value:
+            print key, chosen_dir
+            break
+    
 
-
-
-###############################################################################
-# Model parameters
-###############################################################################
-model.get_weights()
-
-
-
-
-
-
-
-
+check_prediction_on_validation_data()
