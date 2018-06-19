@@ -18,6 +18,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.metrics import confusion_matrix
 from keras import applications
+import scipy
+import skimage
+from skimage.transform import resize
 
 ###############################################################################
 # image parameters
@@ -109,8 +112,33 @@ check_prediction_on_validation_data(model1)
 check_prediction_on_validation_data(model2, base_model2)
 check_prediction_on_validation_data(model3)
 
+###############################################################################
+# Checking any random image
+###############################################################################
+def check_prediction_on_given_image(img_name, model, base_model = None):
+    img = load_img(img_name)
+    plt.imshow(img)
+    x = img_to_array(img)
+    x = scipy.misc.imresize(x, (300, 300, 3), interp='bilinear', mode=None)
+    x = x/255
+    x = x.reshape((1,) + x.shape)
+    if base_model:
+        x = base_model.predict(x)
+    pred = model.predict(x)[0][0]
+    
+    if pred > 0.5:
+        print 'Predicted: ', 'no_leak'
+    else:
+        print 'Predicted: ', 'leak'
+        
+    return
 
 
+img_name = 'new_image/leak.jpg'
+img_name = 'new_image/leak02.png'
+img_name = 'new_image/leak03.jpg'
+img_name = 'new_image/no_leak01.jpeg'
+check_prediction_on_given_image(img_name, model3, base_model = None)
 
 
 
