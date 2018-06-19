@@ -15,7 +15,7 @@ from keras import backend as K
 from keras.optimizers import Adam
 import matplotlib.pyplot as plt
 import numpy as np
-
+from sklearn.metrics import confusion_matrix
 
 
 ###############################################################################
@@ -137,10 +137,10 @@ def check_prediction_on_validation_data():
     
     for key, value in validation_generator.class_indices.items():
         if pred == value:
-            print 'Predicted: ', key, 'Actual: ', chosen_dir
+            print 'Predicted: ', key, '\nActual: ', chosen_dir
             break
         if pred == value:
-            print key, chosen_dir
+            print 'Predicted: ', key, '\nActual: ', chosen_dir
             break
     
 
