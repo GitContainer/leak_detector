@@ -103,12 +103,12 @@ model.fit(train_data, train_labels,
           batch_size=batch_size,
           validation_data=(validation_data, validation_labels))
 
-model.save_weights('transfer_learning_model.h5')
+model.save_weights('transfer_learning_fc_layer_weight.h5')
 
 ###############################################################################
 # Reading model parameters from a file
 ###############################################################################
-model.load_weights('transfer_learning_model.h5')
+model.load_weights('transfer_learning_fc_layer_weight.h5')
 
 ###############################################################################
 # making prediction by choosing a random image from the validation file
