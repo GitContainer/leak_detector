@@ -133,4 +133,6 @@ def check_prediction_on_validation_data():
 
 check_prediction_on_validation_data()
 
+validation_generator.class_indices
+
 
