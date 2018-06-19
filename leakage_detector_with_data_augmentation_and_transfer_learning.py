@@ -90,9 +90,47 @@ validation_generator = test_datagen.flow_from_directory(
 ###############################################################################
 # Model training to fine tune the parameters
 ###############################################################################
+
 model.fit_generator(
     train_generator,
-    samples_per_epoch=nb_train_samples,
+    steps_per_epoch=nb_train_samples // batch_size,
     epochs=epochs,
     validation_data=validation_generator,
-    nb_val_samples=nb_validation_samples)
+    validation_steps=nb_validation_samples // batch_size)
+
+
+model.save_weights('transfer_learning_with_data_augmentation_weight.h5')
+
+###############################################################################
+# Reading model parameters from a file
+###############################################################################
+model.load_weights('transfer_learning_with_data_augmentation_weight.h5')
+
+###############################################################################
+# making prediction by choosing a random image from the validation file
+###############################################################################
+def check_prediction_on_validation_data():
+    dir_name = '/home/ravi/Documents/leakage_detector/data/validation/'
+    class_names = os.listdir(dir_name)
+    chosen_dir = np.random.choice(class_names)
+    chosen_i = np.random.choice(range(1,17))
+    image_name = chosen_dir + '%03d.jpg' %(chosen_i)
+    full_name = dir_name + chosen_dir + '/' + image_name
+    img = load_img(full_name)
+    plt.imshow(img)
+    x = img_to_array(img)
+    x = x/255
+    x = x.reshape((1,) + x.shape)
+    pred = model.predict(x)[0][0]
+    
+    if pred > 0.5:
+        print 'Predicted: ', 'no_leak', '\nActual: ', chosen_dir
+    else:
+        print 'Predicted: ', 'leak', '\nActual: ', chosen_dir
+        
+    return
+    
+
+check_prediction_on_validation_data()
+
+
