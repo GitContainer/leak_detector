@@ -106,6 +106,11 @@ model.fit(train_data, train_labels,
 model.save_weights('transfer_learning_model.h5')
 
 ###############################################################################
+# Reading model parameters from a file
+###############################################################################
+model.load_weights('transfer_learning_model.h5')
+
+###############################################################################
 # making prediction by choosing a random image from the validation file
 ###############################################################################
 def check_prediction_on_validation_data():
