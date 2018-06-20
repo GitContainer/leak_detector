@@ -23,6 +23,11 @@ import skimage
 from skimage.transform import resize
 
 ###############################################################################
+# Set the working directory
+###############################################################################
+os.chdir('/home/ravi/Documents/leakage_detector')
+
+###############################################################################
 # image parameters
 ###############################################################################
 img_width, img_height = 300, 300
@@ -120,12 +125,12 @@ def check_prediction_on_given_image(img_name, model, base_model = None):
     plt.imshow(img)
     x = img_to_array(img)
     x = scipy.misc.imresize(x, (300, 300, 3), interp='bilinear', mode=None)
-    x = x/255
+    x = x/255.0
     x = x.reshape((1,) + x.shape)
     if base_model:
         x = base_model.predict(x)
     pred = model.predict(x)[0][0]
-    
+    print pred
     if pred > 0.5:
         print 'Predicted: ', 'no_leak'
     else:
@@ -134,14 +139,21 @@ def check_prediction_on_given_image(img_name, model, base_model = None):
     return
 
 
-img_name = 'new_image/leak.jpg'
+img_name = 'new_image/leak01.jpg'
 img_name = 'new_image/leak02.png'
 img_name = 'new_image/leak03.jpg'
 img_name = 'new_image/no_leak01.jpeg'
-check_prediction_on_given_image(img_name, model3, base_model = None)
+img_name = 'new_image/no_leak02.jpg'
+img_name = 'new_image/no_leak03.jpg'
+img_name = 'new_image/no_leak04.jpg'
+check_prediction_on_given_image(img_name, model2, base_model = base_model2)
+check_prediction_on_given_image(img_name, model3)
 
-
-
+img = load_img(img_name)
+plt.imshow(img)
+x = img_to_array(img)
+x = scipy.misc.imresize(x, (300, 300, 3), interp='bilinear', mode=None)
+plt.imshow(x)
 
 
 
