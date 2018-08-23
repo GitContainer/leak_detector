@@ -18,8 +18,7 @@ from keras.models import Sequential
 from keras.preprocessing.image import img_to_array, load_img
 import matplotlib.pyplot as plt
 import scipy
-
-
+import urllib
 import warnings
 warnings.filterwarnings("ignore")
 ###############################################################################
@@ -106,6 +105,17 @@ img_name = 'new_image/no_leak04.jpg'
 check_prediction_on_given_image(img_name, model3)
 
 
+
+
+
+###############################################################################
+# random images from internet
+###############################################################################
+url = 'http://www.valleywaterservices.com/wp-content/uploads/sites/12/water-leak1.jpg'
+url = 'https://thumbs.dreamstime.com/z/red-valve-oil-gas-pipe-system-18688829.jpg'
+urllib.request.urlretrieve(url, "new_image//download.jpg")
+img_name = 'new_image//download.jpg'
+check_prediction_on_given_image(img_name, model3)
 
 ###############################################################################
 # resized image
